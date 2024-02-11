@@ -1,11 +1,18 @@
-from services import contact_manager
-from tabulate import tabulate
+from services import CsvExecutor, Paginator
 from config import settings
+from schemas import Contact
 
 
 def add_contact():
-    name = input("Введите имя контакта: ")
-    number = input("Введите номер телефона: ")
+    contact = Contact(name=input("Введите имя контакта: ").title(),
+                      patronymic=input("Введите отчество контакта: ").title(),
+                      surname=input("Введите фамилию контакта: ").title(),
+                      organization=input("Введите название организации: ").title(),
+                      work_phone=input("Введите рабочий номер телефона: "),
+                      personal_phone=input("Введите личный номер телефона: "))
+    executor: CsvExecutor = CsvExecutor(file=settings.FILE_NAME)
+    executor.add_one(contact.model_dump())
+    print(f"\nКонтакт добавлен в {settings.FILE_NAME}\n")
 
 
 def find_contact():
@@ -16,30 +23,26 @@ def delete_contact():
     name = input("Введите имя контакта для удаления: ")
 
 
-def show_contacts(page_size=settings.PAGE_SIZE, sort_by=settings.SORT_BY):
-    contacts: list[dict] = contact_manager(file=settings.FILE_NAME, mode="r")
-    contacts.sort(key=lambda x: x[sort_by])
-    total_pages: int = (len(contacts) + page_size - 1) // page_size
-    current_page: int = 1
+def show_contacts(page_size=settings.PAGE_SIZE, sort_by=settings.SORT_BY) -> None:
+    executor: CsvExecutor = CsvExecutor(file=settings.FILE_NAME)
+    contacts: list[dict] = executor.read_data()
+
+    paginator: Paginator = Paginator(data=contacts, page_size=page_size, sort_by=sort_by)
+    total_pages = paginator.get_total_pages()
+    current_page = 1
 
     while True:
-        start = (current_page - 1) * page_size
-        end = start + page_size
-        current_page_data = contacts[start:end]
-
-        table = tabulate(tabular_data=current_page_data, headers="keys", tablefmt="grid")
-        print(table)
 
         user_input = input(f"Страница {current_page}/{total_pages}. Введите номер страницы или 'exit' для выхода: ")
-
         if user_input.lower() == 'exit':
             break
 
         try:
+            paginator.display_page(current_page)
             page_number = int(user_input)
             if 1 <= page_number <= total_pages:
                 current_page = page_number
             else:
-                print(f"Invalid page number. Please enter a number between 1 and {total_pages}.")
+                print(f"ВНИМАНИЕ! >>> Некорректный номер страницы. Введите номер страницы от 1 до {total_pages}.")
         except ValueError:
-            print("Invalid input. Please enter a valid page number or 'exit'.")
+            print("ВНИМАНИЕ! >>> Некорректный ввод. Введите номер страницы или 'exit' для выхода.")

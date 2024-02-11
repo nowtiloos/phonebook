@@ -1,27 +1,27 @@
-import sys
-
 from controllers import add_contact, find_contact, delete_contact, show_contacts
 
 
 def main():
-    if len(sys.argv) <= 1:
-        print(f"""Для запуска скрипта введите
-python {sys.argv[0]} <аргумент> """)
-        return
+    actions = [add_contact, find_contact, delete_contact, show_contacts]
 
-    argument = sys.argv[1]
+    while True:
+        print("Выберите действие:")
+        for i, action in enumerate(actions, start=1):
+            print(f"{i}. {action.__name__.replace('_', ' ').title()}")
+        print("0. Exit")
 
-    match argument:
-        case "add":
-            add_contact()
-        case "find":
-            find_contact()
-        case "delete":
-            delete_contact()
-        case "show":
-            show_contacts()
-        case _:
-            print("Неверное действие. Доступные действия: add, find, delete, show.")
+        choice = input("Введите номер действия: ")
+
+        if choice.isdigit() and 0 <= int(choice) <= len(actions):
+            index = int(choice)
+            if index == 0:
+                print("Программа завершена.")
+                break
+            else:
+                if actions[index - 1]():
+                    continue
+        else:
+            print("Некорректный ввод. Пожалуйста, выберите существующее действие.")
 
 
 if __name__ == "__main__":

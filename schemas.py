@@ -6,11 +6,10 @@ class Contact(BaseModel):
     patronymic: str
     surname: str
     organization: str
-    work_phone: int
-    personal_phone: int
+    work_phone: str
+    personal_phone: str
 
     class Config:
         from_attributes = True
 
 
-headers = list(Contact.__annotations__)
