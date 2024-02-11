@@ -110,3 +110,28 @@ class Paginator:
                     err = f"ВНИМАНИЕ! >>> Некорректный номер страницы. Введите номер страницы от 1 до {total_pages}."
             except ValueError:
                 err = "ВНИМАНИЕ! >>> Некорректный ввод. Введите номер страницы или 'exit' для выхода."
+
+
+class MainMenu:
+    def __init__(self, controllers):
+        self.controllers = controllers
+
+    def show(self):
+        while True:
+            print("Выберите операцию:")
+            for i, action in enumerate(self.controllers, start=1):
+                print(f"{i}. {action.__name__.replace('_', ' ').title()}")
+            print("0. Exit\n")
+
+            operation = input("Введите номер операции: ")
+
+            if operation.isdigit() and 0 <= int(operation) <= len(self.controllers):
+                index = int(operation)
+                if index == 0:
+                    print("Программа завершена.")
+                    break
+                else:
+                    if self.controllers[index - 1]():
+                        continue
+            else:
+                print("Некорректный ввод. Пожалуйста, выберите существующую операцию.")
