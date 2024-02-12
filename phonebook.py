@@ -1,9 +1,9 @@
-from controllers import add_contact, find_contact, delete_contact, show_contacts, patch_contact
+from controllers import add_contact, feature_search, delete_contact, show_contacts, patch_contact
 from services import MainMenu
 
 
 def main():
-    controllers = [show_contacts, find_contact, add_contact, patch_contact, delete_contact]
+    controllers = (show_contacts, feature_search, add_contact, patch_contact, delete_contact)
     menu = MainMenu(controllers=controllers)
 
     menu.show()

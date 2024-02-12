@@ -26,12 +26,21 @@ class CsvExecutor:
 
             writer.writerow(contact_data)
 
-    def search(self, search_term: str, search_field: str) -> list[dict]:
+    def find_all(self, search_term: str, search_field: str) -> list[dict]:
         contacts: list[dict] = self.read_data()
         regex_pattern = re.compile(f"^{search_term}", re.IGNORECASE)
 
         search_results = [contact for contact in contacts if regex_pattern.search(contact[search_field])]
         return search_results
+
+    def find_one_or_none(self, identifier: str) -> dict | None:
+        contacts: list[dict] = self.read_data()
+        search_result = None
+        for contact in contacts:
+            if contact["id"] == identifier:
+                search_result = contact
+                break
+        return search_result
 
     def delete(self, identifier: str) -> bool:
         contacts: list[dict] = self.read_data()
@@ -40,9 +49,6 @@ class CsvExecutor:
             if contact.get("id") == identifier:
                 del contacts[index]
                 break
-        else:
-            print(f"Контакт с id {identifier} не найден\n")
-            return False
 
         self._rewrite(data=contacts)
 
@@ -120,8 +126,8 @@ class MainMenu:
         while True:
             print("Выберите операцию:")
             for i, action in enumerate(self.controllers, start=1):
-                print(f"{i}. {action.__name__.replace('_', ' ').title()}")
-            print("0. Exit\n")
+                print(f"{i}. {action.__doc__.strip()}")
+            print("0. Выход\n")
 
             operation = input("Введите номер операции: ")
 
