@@ -3,8 +3,8 @@ from services import MainMenu
 
 
 def main():
-    controllers = (show_contacts, feature_search, add_contact, patch_contact, delete_contact)
-    menu = MainMenu(controllers=controllers)
+    controllers: tuple = (show_contacts, feature_search, add_contact, patch_contact, delete_contact)
+    menu: MainMenu = MainMenu(controllers=controllers)
 
     menu.show()
 

@@ -5,6 +5,8 @@ from tabulate import tabulate
 
 
 class CsvExecutor:
+    """Класс для работы с csv-файлами"""
+
     def __init__(self, file: str, encoding: str = "utf-8") -> None:
         self.file = file
         self.encoding = encoding
@@ -77,6 +79,8 @@ class CsvExecutor:
 
 
 class Paginator:
+    """Класс для отображения данных из csv-файла в консоль с пагинацией"""
+
     def __init__(self, data: list[dict], page_size: int, sort_by: str) -> None:
         self.data = sorted(data, key=lambda x: x[sort_by])
         self.page_size = page_size
@@ -119,6 +123,8 @@ class Paginator:
 
 
 class MainMenu:
+    """Конструктор главного меню"""
+
     def __init__(self, controllers):
         self.controllers = controllers
 
